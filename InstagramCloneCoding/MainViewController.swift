@@ -19,6 +19,7 @@ class MainViewController: UIViewController {
         
         return view
     }()
+    lazy var tableView = UITableView()
     
     private func setupDataSource() {
         for i in 1...10 {
@@ -28,10 +29,12 @@ class MainViewController: UIViewController {
     
     private func addSubviews() {
         view.addSubview(collectionView)
+        view.addSubview(tableView)
     }
     
     private func registerCell() {
         collectionView.register(StoriesCell.self, forCellWithReuseIdentifier: StoriesCell.id)
+        tableView.register(FeedsCell.self, forCellReuseIdentifier: "FeedsCell")
     }
     
     private func configure() {
@@ -39,6 +42,11 @@ class MainViewController: UIViewController {
             make.leading.trailing.equalToSuperview()
             make.height.equalTo(100)
             make.top.equalTo(self.view.safeAreaLayoutGuide)
+        }
+        tableView.snp.makeConstraints{ make in
+            make.leading.trailing.bottom.equalToSuperview()
+            make.top.equalTo(self.collectionView.snp.bottom)
+            
         }
     }
     
@@ -49,6 +57,8 @@ class MainViewController: UIViewController {
         addSubviews()
         collectionView.dataSource = self
         collectionView.delegate = self
+        tableView.dataSource = self
+        tableView.delegate = self
         registerCell()
         configure()
         
@@ -78,4 +88,17 @@ extension MainViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: 100, height: collectionView.frame.height)
     }
+}
+
+extension MainViewController: UITableViewDelegate, UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 10
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "FeedsCell")!
+        return cell
+    }
+    
+    
 }
